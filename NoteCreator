@@ -1,0 +1,28 @@
+
+package notecreator;
+
+import noteClasses.NoteFrame;
+import noteClasses.NoteList;
+
+/**
+ *
+ * @author Parth
+ */
+public class NoteCreator {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        NoteList noteList1=new NoteList();
+        noteList1.setVisible(true);
+    }
+    
+    public static final int WIDTH=320;
+    public static final int HEIGHT=240;
+    public static String title="New Note";
+    public static String noteListTitle="Notes";
+    public static final String notesDirectory="C:\\Users\\Parth\\Documents\\NoteCreatorData\\";
+    public static final int locX=500;
+    public static final int locY=200;
+}
