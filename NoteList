@@ -1,0 +1,281 @@
+
+package noteClasses;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import notecreator.NoteCreator;
+
+/**
+ *
+ * @author Parth
+ */
+public class NoteList extends javax.swing.JFrame {
+
+    /**
+     * Creates new form NoteList
+     */
+    public NoteList() {
+        this.setSize(NoteCreator.WIDTH,NoteCreator.HEIGHT);
+        this.setTitle(NoteCreator.noteListTitle);
+        this.setLocation(NoteCreator.locX,NoteCreator.locY);
+        
+        initComponents();
+        
+        jPanel1.setLayout(new GridLayout(100,1));
+        jPanel2=new JPanel();
+        jPanel2.setLayout(new BorderLayout());
+        jPanel2.setBackground(new Color(204,204,250));
+        jPanel1.remove(jButton2);
+        jPanel2.add(jButton2,BorderLayout.WEST);
+        jPanel1.add(jPanel2);
+        
+        displayNotesList();
+    }
+
+    class StatusDisplayWorker2 implements Runnable
+    {
+    private String msg="";
+    
+    public StatusDisplayWorker2(String msg)
+    {
+        this.msg=msg;
+    }
+    
+    public void startWork()
+    {
+        new Thread(this).start();
+    }
+    @Override
+    public void run() {
+            try {
+                jLabel1.setText(msg);
+                Thread.sleep(3000);
+                jLabel1.setText("");
+                msg="";
+            } catch (InterruptedException ex) {
+                Logger.getLogger(NoteFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    }
+    
+    }
+    
+    private void hideWindow()
+    {
+        this.setVisible(false);
+    }
+    
+    private class MyMouseListener extends MouseAdapter
+    {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            //super.mouseClicked(e);
+            if(e.getButton()==MouseEvent.BUTTON3)
+            {
+                int ans=JOptionPane.showConfirmDialog(rootPane, preDeleteMsg,delOptPaneTitle,JOptionPane.INFORMATION_MESSAGE);
+                if(ans==0)
+                {
+                    String tempFileName=((JButton)e.getSource()).getText();
+                    tempFileName=tempFileName.substring(0, tempFileName.length()-3);
+                    File tempFile=new File(NoteCreator.notesDirectory+tempFileName+".txt");
+                    if(tempFile.exists())
+                    {
+                        boolean delete = tempFile.delete();
+                        if(delete==true)
+                        {
+                            hideWindow();
+                            new NoteList().setVisible(true);
+                        }
+                        else
+                        {
+                            //JOptionPane.showMessageDialog(rootPane,postDeleteErrorMsg,delOptPaneTitle,JOptionPane.INFORMATION_MESSAGE );
+                            System.exit(1);
+                        }
+                    }
+                    else
+                    {
+                        System.exit(1);
+                    }
+                }
+               
+            }
+            else
+            {
+                File tempFile=new File(NoteCreator.notesDirectory+((JButton)e.getSource()).getActionCommand());
+                if(tempFile.exists())
+                {
+                    try {
+                        NoteFrame noteFrame1=new NoteFrame();
+                        noteFrame1.setVisible(true);
+                        noteFrame1.setLocation(NoteCreator.locX, NoteCreator.locY);
+                        br=new BufferedReader(new FileReader(tempFile));
+                        temp=br.readLine();
+                        while(temp!=null)
+                        {
+                            textToBeDisplayed+=temp+'\n';
+                            temp=br.readLine();
+                        }
+                        br.close();
+                        noteFrame1.displayNote(textToBeDisplayed);
+                        hideWindow();
+
+                    } catch (FileNotFoundException ex) {
+                        Logger.getLogger(NoteList.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    catch(IOException ex)
+                    {
+                        Logger.getLogger(NoteList.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(rootPane, "File Not Found");
+                }
+            }
+        }
+    }
+                
+    
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        jButton2 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jPanel1.setBackground(new java.awt.Color(204, 204, 255));
+        jPanel1.setAutoscrolls(true);
+
+        jButton2.setBackground(new java.awt.Color(204, 204, 0));
+        jButton2.setText("+");
+        jButton2.setToolTipText("new note");
+        jButton2.setFocusable(false);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(22, 22, 22))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(35, 35, 35)
+                .addComponent(jButton2)
+                .addContainerGap(324, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 255, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+        goToNoteFrame();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void goToNoteFrame()
+    {
+        NoteFrame noteFrame1=new NoteFrame();
+        noteFrame1.setVisible(true);
+        noteFrame1.setLocation(NoteCreator.locX, NoteCreator.locY);
+        hideWindow();
+    }
+    
+    private void displayNotesList()
+    {
+        File notesDirectory=new File(notecreator.NoteCreator.notesDirectory);
+        if(notesDirectory.isDirectory())
+        {    
+            mouseListener1=new MyMouseListener();
+            notes=notesDirectory.listFiles();
+            int count=notes.length;
+            for(int i=0;i<count;i++)
+            {
+                if(notes[i].isFile())
+                {
+                    titleLabel1=new JButton((notes[i].getName()).substring(0, (notes[i].getName()).length()-4)+"...");
+                    titleLabel1.setActionCommand(notes[i].getName());
+                    titleLabel1.addMouseListener(mouseListener1);
+                    titleLabel1.setBackground(new Color(204,204,250));
+                    titleLabel1.setToolTipText(toolTip);
+                    titleLabel1.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(204,204,0)));
+                    titleLabel1.setSize(200, 50);
+                    jPanel1.add(titleLabel1);
+                }
+            }
+        }
+        else
+        {
+            titleLabel1=new JButton("Notes Directory Missing");
+            jPanel1.add(titleLabel1);
+        }
+        titleLabel1=null;
+    }
+    /**
+     * @param args the command line arguments
+     */
+
+    private String temp="", textToBeDisplayed="";
+    
+    private String toolTip="left click-open, right click-delete";
+    private String preDeleteMsg="Are you sure to delete this note?";
+    private String postDeleteErrorMsg="Unable to delete the Note...";
+    private String delOptPaneTitle="Deleting Note";
+    private String postDelStatusMsg="1 note deleted";
+
+    private JButton titleLabel1;
+    private File[] notes=new File[100];
+    private FileInputStream fis;
+    private BufferedReader br;
+    private MyMouseListener mouseListener1;
+    private JPanel jPanel2;
+   
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    // End of variables declaration//GEN-END:variables
+}
